@@ -118,7 +118,7 @@ function run() {
       $(type + "-count").textContent = String(result.summary[type]);
     for (const type of ["json", "html"])
       $<HTMLButtonElement>("download-" + type).disabled = false;
-    status.textContent = `${result.operations} baseline operations · ${result.findings.length} findings`;
+    status.textContent = `${result.operations} baseline operations · ${result.findings.length} finding${result.findings.length === 1 ? "" : "s"}`;
     render();
   };
   worker.onerror = () =>
