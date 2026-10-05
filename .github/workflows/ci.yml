@@ -1,0 +1,65 @@
+name: Check and publish
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: contract-watch-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check && npm test && npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failures
+          path: test-results/
+          retention-days: 7
+      - name: Exercise this action on a breaking release
+        id: contract
+        continue-on-error: true
+        uses: ./
+        with:
+          baseline: examples/baseline.json
+          candidate: examples/breaking.json
+      - name: Verify action fails and exports the expected report
+        env:
+          OUTCOME: ${{ steps.contract.outcome }}
+          REPORT_DIR: ${{ steps.contract.outputs.report-directory }}
+        run: |
+          test "$OUTCOME" = failure
+          node --input-type=module -e 'import fs from "node:fs"; import assert from "node:assert/strict"; const r=JSON.parse(fs.readFileSync(process.env.REPORT_DIR+"/report.json","utf8")); assert.equal(r.summary.breaking,4);'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: example-contract-report
+          path: ${{ steps.contract.outputs.report-directory }}
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          path: site
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

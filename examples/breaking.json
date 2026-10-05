@@ -1,0 +1,59 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Parcel API",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/parcels": {
+      "get": {
+        "operationId": "listParcels",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["shipped", "delivered"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parcel list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Parcel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Parcel": {
+        "type": "object",
+        "required": ["id", "status"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["queued", "shipped", "delivered", "returned"]
+          },
+          "trackingUrl": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

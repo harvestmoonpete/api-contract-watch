@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Compare two OpenAPI contracts locally. Review breaking changes, export reports, and use the same TypeScript engine in CI."
+    />
+    <meta name="theme-color" content="#121922" />
+    <title>API Contract Watch — review before release</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23121922'/%3E%3Cpath d='m7 16 6 6L25 10' fill='none' stroke='%238cdbbd' stroke-width='4'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#inputs">Skip to specifications</a>
+    <div class="shell">
+      <header>
+        <a class="brand" href="./"
+          ><span class="mark" aria-hidden="true">↔</span> Contract Watch<span
+            class="version"
+            >v0.1</span
+          ></a
+        >
+        <nav aria-label="Project links">
+          <a href="https://github.com/harvestmoonpete/api-contract-watch"
+            >Source & CLI</a
+          ><a href="https://harvestmoonpete.github.io/">Portfolio</a>
+        </nav>
+      </header>
+      <main>
+        <section class="intro">
+          <p class="eyebrow">API CONTRACT REVIEW / OPENAPI 3.0 + 3.1</p>
+          <h1>Small change.<br /><span>Different contract.</span></h1>
+          <p>
+            Find compatibility risks before your next release. Compare two
+            specifications, inspect the reasoning, and take the report to your
+            pull request.
+          </p>
+          <div class="local">
+            <span aria-hidden="true">◈</span> Real analysis in your browser.
+            Files stay on this device. No accounts, uploads, or AI.
+          </div>
+        </section>
+        <section id="inputs" aria-labelledby="input-title">
+          <div class="section-heading">
+            <h2 id="input-title">01 / Compare specifications</h2>
+            <span class="meta">JSON or YAML · 2 MiB per file</span>
+          </div>
+          <div class="samples" role="group" aria-label="Sample scenarios">
+            <span>Explore a sample</span
+            ><button data-sample="breaking" aria-pressed="true">
+              Breaking release</button
+            ><button data-sample="additive" aria-pressed="false">
+              Additive release</button
+            ><button data-sample="review" aria-pressed="false">
+              Needs review
+            </button>
+          </div>
+          <div class="editors">
+            <section class="editor">
+              <div>
+                <label for="baseline">Baseline</label
+                ><label class="file-label"
+                  >Load file<input
+                    type="file"
+                    id="baseline-file"
+                    accept=".json,.yaml,.yml"
+                    aria-label="Load baseline file"
+                /></label>
+              </div>
+              <textarea
+                id="baseline"
+                spellcheck="false"
+                aria-describedby="editor-help"
+              ></textarea>
+            </section>
+            <section class="editor">
+              <div>
+                <label for="candidate">Candidate</label
+                ><label class="file-label"
+                  >Load file<input
+                    type="file"
+                    id="candidate-file"
+                    accept=".json,.yaml,.yml"
+                    aria-label="Load candidate file"
+                /></label>
+              </div>
+              <textarea
+                id="candidate"
+                spellcheck="false"
+                aria-describedby="editor-help"
+              ></textarea>
+            </section>
+          </div>
+          <div class="compare-bar">
+            <p id="editor-help">
+              Edit the sample or load your own specs. Baseline is the contract
+              existing clients expect.
+            </p>
+            <button class="primary" id="compare">Compare contracts</button>
+          </div>
+          <p id="error" role="alert" hidden></p>
+        </section>
+        <section class="results" aria-labelledby="result-title">
+          <div class="section-heading">
+            <h2 id="result-title">02 / Review the impact</h2>
+            <span id="status" role="status">Ready to compare</span>
+          </div>
+          <div class="summary">
+            <div>
+              <span>Breaking</span><strong id="breaking-count">—</strong
+              ><small>Existing clients may fail</small>
+            </div>
+            <div>
+              <span>Manual review</span><strong id="review-count">—</strong
+              ><small>Requires a human decision</small>
+            </div>
+            <div>
+              <span>Informational</span><strong id="info-count">—</strong
+              ><small>Changes to understand</small>
+            </div>
+          </div>
+          <div class="report-tools">
+            <label
+              >Show<select id="filter">
+                <option value="all">All findings</option>
+                <option value="breaking">Breaking only</option>
+                <option value="review">Manual review only</option>
+                <option value="info">Informational only</option>
+              </select></label
+            >
+            <div>
+              <button id="download-json" disabled>Download JSON</button
+              ><button id="download-html" disabled>Download HTML</button>
+            </div>
+          </div>
+          <div id="findings"></div>
+        </section>
+        <section class="scope">
+          <div>
+            <p class="eyebrow">THE SAME ENGINE, IN YOUR WORKFLOW</p>
+            <h2>From a quick review<br />to a release check.</h2>
+            <p>
+              Use the CLI locally or the composite GitHub Action. By default,
+              both breaking changes and unresolved review findings fail the
+              check.
+            </p>
+            <pre><code>node dist/cli.js old.yaml new.yaml \
+  --format html --out report.html</code></pre>
+            <a
+              href="https://github.com/harvestmoonpete/api-contract-watch#github-action"
+              >Read the setup guide</a
+            >
+          </div>
+          <div>
+            <h3>A bounded compatibility review</h3>
+            <ul>
+              <li>
+                Detects removed operations, newly required inputs, type and enum
+                changes, and selected schema constraints.
+              </li>
+              <li>
+                Checks requests and responses in opposite compatibility
+                directions.
+              </li>
+              <li>
+                Flags unsupported constructs and unresolved references for
+                review. External references are never fetched.
+              </li>
+              <li>
+                No findings does not prove compatibility. Runtime behavior and
+                generated SDKs still need testing.
+              </li>
+            </ul>
+            <details>
+              <summary>Why can an added response value break a client?</summary>
+              <p>
+                An old client may handle only “queued,” “shipped,” and
+                “delivered.” Adding “returned” to the response enum can break an
+                exhaustive switch. Accepting an extra request enum value,
+                however, preserves the old inputs.
+              </p>
+            </details>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <span>Built by Daniel Oliveros Guerra</span
+        ><span>TypeScript · local analysis · explicit limits</span>
+      </footer>
+    </div>
+    <script type="module" src="/web/main.ts"></script>
+  </body>
+</html>

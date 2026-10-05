@@ -1,0 +1,40 @@
+name: API Contract Watch
+description: Compare local OpenAPI contracts and export JSON and HTML compatibility reports.
+author: Daniel Oliveros Guerra
+branding:
+  icon: git-pull-request
+  color: blue
+inputs:
+  baseline:
+    description: Baseline JSON/YAML file, relative to the calling workspace
+    required: true
+  candidate:
+    description: Candidate JSON/YAML file, relative to the calling workspace
+    required: true
+  fail-on:
+    description: review (breaking or manual review), breaking, or none
+    default: review
+outputs:
+  report-directory:
+    description: Temporary directory containing report.json and report.html
+    value: ${{ steps.compare.outputs.report-directory }}
+  exit-code:
+    description: 0 policy passed, 1 policy failed; input failures stop with exit 2
+    value: ${{ steps.compare.outputs.exit-code }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "24"
+    - shell: bash
+      run: |
+        npm ci --prefix "$GITHUB_ACTION_PATH"
+        npm run build:cli --prefix "$GITHUB_ACTION_PATH"
+    - id: compare
+      shell: bash
+      env:
+        CW_BASELINE: ${{ inputs.baseline }}
+        CW_CANDIDATE: ${{ inputs.candidate }}
+        CW_FAIL_ON: ${{ inputs.fail-on }}
+      run: node "$GITHUB_ACTION_PATH/dist/action.js"
