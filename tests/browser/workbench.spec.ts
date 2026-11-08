@@ -78,3 +78,19 @@ test("local YAML files compare through keyboard activation", async ({
     page.getByRole("button", { name: "Download JSON" }),
   ).toBeEnabled();
 });
+
+
+test('swapping specifications clears stale reports and reverses the inputs', async ({page}) => {
+  await page.goto('./');
+  await expect(page.locator('#breaking-count')).toHaveText('4');
+  const before = await page.locator('#baseline').inputValue();
+  const after = await page.locator('#candidate').inputValue();
+  await page.getByRole('button', {name:'Swap specifications'}).click();
+  await expect(page.locator('#baseline')).toHaveValue(after);
+  await expect(page.locator('#candidate')).toHaveValue(before);
+  await expect(page.getByRole('button', {name:'Download JSON'})).toBeDisabled();
+  await expect(page.locator('#findings article')).toHaveCount(0);
+  await page.getByRole('button', {name:'Compare contracts'}).click();
+  await expect(page.getByRole('button', {name:'Download JSON'})).toBeEnabled();
+  await expect(page.locator('#status')).toContainText('1 baseline operations');
+});

@@ -182,6 +182,18 @@ for (const id of ["baseline", "candidate"]) {
     },
   );
 }
+$("swap").onclick = () => {
+  inputVersions.baseline++;
+  inputVersions.candidate++;
+  [before.value, after.value] = [after.value, before.value];
+  for (const id of ["baseline-file", "candidate-file"])
+    $<HTMLInputElement>(id).value = "";
+  for (const button of document.querySelectorAll("[data-sample]"))
+    button.setAttribute("aria-pressed", "false");
+  invalidate();
+  status.textContent =
+    "Specifications swapped — compare to review the reverse direction";
+};
 compareButton.onclick = run;
 $("filter").onchange = render;
 for (const type of ["json", "html"])

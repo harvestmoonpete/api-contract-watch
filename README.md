@@ -109,3 +109,7 @@ GitHub Actions deploys the Pages workbench only after checks pass on `main`. Bro
 ## License
 
 MIT. Created by Daniel Oliveros Guerra.
+
+## Small improvement · November 7, 2026
+
+Use **Swap specifications** to review a change in the opposite direction. Swapping clears stale findings and downloads; select Compare contracts to run a fresh analysis.
