@@ -12,6 +12,7 @@ const before = $<HTMLTextAreaElement>("baseline"),
 const samples = { breaking, additive, review };
 const inputVersions: Record<string, number> = { baseline: 0, candidate: 0 };
 let challengeStep: number | null = null;
+let focusChallengeAfterCheck = false;
 let challengeCandidate = structuredClone(breaking) as {
   paths: Record<string, any>;
   components: typeof breaking.components;
@@ -44,6 +45,7 @@ function exitChallenge(
   message = "Challenge exited. Your current specifications remain in the editors.",
 ) {
   challengeStep = null;
+  focusChallengeAfterCheck = false;
   $("challenge-work").hidden = false;
   $("challenge-progress").textContent = message;
   $("challenge-repair").hidden = true;
@@ -88,6 +90,12 @@ function showChallenge() {
     $("challenge-diff").textContent = "Breaking findings: 4 → 2 → 1 → 0";
     $("challenge-outcome").textContent =
       "Takeaway: preserve what callers may send and what clients can rely on receiving. Download the report below, then try your own specifications. Zero findings is not proof of runtime or SDK compatibility.";
+  }
+  if (verified && focusChallengeAfterCheck) {
+    focusChallengeAfterCheck = false;
+    const target = step ? repair : $("challenge-step");
+    if (!step) target.tabIndex = -1;
+    target.focus();
   }
 }
 let result: Report | undefined,
@@ -299,6 +307,7 @@ $("challenge-start").onclick = () => {
   load("breaking");
   challengeCandidate = structuredClone(breaking);
   challengeStep = 0;
+  focusChallengeAfterCheck = true;
   $("challenge-work").hidden = false;
   $("challenge-exit").hidden = false;
   $("challenge-repair").hidden = false;
@@ -331,6 +340,7 @@ $("challenge-repair").onclick = () => {
     );
   }
   challengeStep++;
+  focusChallengeAfterCheck = true;
   inputVersions.candidate++;
   after.value = JSON.stringify(challengeCandidate, null, 2);
   for (const button of document.querySelectorAll("[data-sample]"))
