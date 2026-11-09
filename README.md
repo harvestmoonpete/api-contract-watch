@@ -113,3 +113,7 @@ MIT. Created by Daniel Oliveros Guerra.
 ## Small improvement · November 7, 2026
 
 Use **Swap specifications** to review a change in the opposite direction. Swapping clears stale findings and downloads; select Compare contracts to run a fresh analysis.
+
+## Guided challenge · November 8, 2026
+
+Start the guided Parcel API challenge from the landing screen. Review and apply three targeted repairs; the real analyzer verifies the breaking finding count changes from 4 to 2 to 1 to 0. Repairs preserve version 2.0.0. Editing, loading files, or swapping inputs exits the exercise without replacing your custom input. Download the final report, then try your own contracts. Zero findings still does not prove runtime or SDK compatibility.

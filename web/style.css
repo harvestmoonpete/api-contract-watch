@@ -511,3 +511,62 @@ footer {
     padding-top: 35px;
   }
 }
+
+.challenge {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--green);
+  border-radius: 7px;
+  padding: 24px;
+  margin-bottom: 28px;
+  background: #1b2633;
+}
+.challenge h2 {
+  font-size: 24px;
+  line-height: 1.3;
+}
+.challenge p {
+  line-height: 1.7;
+  max-width: 85ch;
+}
+.challenge .challenge-note {
+  color: var(--muted);
+  font-size: 13px;
+}
+.challenge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.challenge pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+  padding: 16px;
+  background: #121922;
+  color: #c7dfef;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.challenge progress {
+  width: 100%;
+  height: 12px;
+  accent-color: var(--green);
+}
+.challenge h3 {
+  line-height: 1.5;
+}
+#challenge-progress {
+  color: var(--green);
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .challenge {
+    padding: 18px;
+  }
+  .challenge-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

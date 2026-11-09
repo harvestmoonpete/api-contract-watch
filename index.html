@@ -44,6 +44,42 @@
             Files stay on this device. No accounts, uploads, or AI.
           </div>
         </section>
+        <section class="challenge" aria-labelledby="challenge-title">
+          <p class="eyebrow">GUIDED CHALLENGE · ABOUT 3 MINUTES</p>
+          <h2 id="challenge-title">Ship a compatible Parcel API release.</h2>
+          <p>
+            Existing clients still use v1. A proposed v2 rejects an old request
+            value, returns an unexpected status, drops a field guarantee, and
+            removes an endpoint. Find and repair all four risks.
+          </p>
+          <p class="challenge-note">
+            This exercise edits real sample specifications and reruns the same
+            comparison engine used by the CLI. Starting replaces the two editors
+            with samples; your files are never uploaded.
+          </p>
+          <div class="challenge-actions">
+            <button id="challenge-start" class="primary">
+              Start with sample specs</button
+            ><button id="challenge-exit" hidden>Exit challenge</button>
+          </div>
+          <div id="challenge-work" hidden>
+            <p id="challenge-progress" role="status"></p>
+            <progress
+              id="challenge-meter"
+              max="3"
+              value="0"
+              aria-label="Verified repairs"
+            ></progress>
+            <h3 id="challenge-step"></h3>
+            <p id="challenge-why"></p>
+            <pre id="challenge-diff" aria-label="Proposed repair"></pre>
+            <button id="challenge-repair" disabled>
+              Repair enum contracts
+            </button>
+            <p id="challenge-outcome"></p>
+            <a href="#result-title">Inspect the full findings below ↓</a>
+          </div>
+        </section>
         <section id="inputs" aria-labelledby="input-title">
           <div class="section-heading">
             <h2 id="input-title">01 / Compare specifications</h2>
